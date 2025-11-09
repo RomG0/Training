@@ -1,3 +1,5 @@
+// very good overall, could be better, let's talk
+
 def calc_numbers(num_count, sum, last_added):
     print(sum)
     sum += last_added
