@@ -19,7 +19,9 @@ INT GetStartingNumber() {
 }
 
 VOID StackCalculator(INT iniOriginalNumber) {
-
+// I'm giving you a chance to look for what you did wrong.
+// A clue - Does this function work for any sequence of inputs?
+	
 	INT iNumber;
 	INT iLastNumber;
 	CHAR cAction;
