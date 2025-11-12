@@ -146,7 +146,8 @@ INT CheckSDiagonalWin(CHAR **inarrBoardContents, INT iniBoardSize) {
 }
 
 INT CheckWin(CHAR **inarrBoardContents, INT iniBoardSize) {
-
+// not very efficient
+	
 	if (CheckRowWin(inarrBoardContents, iniBoardSize) == 1 || CheckColumnWin(inarrBoardContents, iniBoardSize) == 1 ||
 		CheckMDiagonalWin(inarrBoardContents, iniBoardSize) == 1 || CheckSDiagonalWin(inarrBoardContents, iniBoardSize) == 1) {
 
@@ -232,6 +233,7 @@ INT main() {
 	CHAR** arrBoardContents = (CHAR**)malloc(iBoardSize * sizeof(CHAR*));
 
 	// Initializing Board
+	// explain to me the initialization process!
 	if (arrBoardContents) {
 		for (INT iRow = 0; iRow < iBoardSize; iRow++) {
 			arrBoardContents[iRow] = (CHAR*)malloc(iBoardSize * sizeof(CHAR));
@@ -244,7 +246,7 @@ INT main() {
 	}
 
 	while (CheckWin(arrBoardContents, iBoardSize) == 0 && iTurnsPlayed < iBoardSize*iBoardSize) {
-
+	// looks so much better, isn't it?
 		PrintBoard(arrBoardContents, iBoardSize);
 		
 		iTurnsPlayed = FillSqaure(arrBoardContents, iBoardSize, iTurnsPlayed, &bNextPlayer);
@@ -253,6 +255,7 @@ INT main() {
 
 	PrintBoard(arrBoardContents, iBoardSize);
 
+	// also here - is it efficient?
 	if (CheckWin(arrBoardContents, iBoardSize) == 1) {
 		printf_s("X Won!");
 	}
@@ -262,5 +265,8 @@ INT main() {
 	else {
 		printf_s("Game over - tie!");
 	}
+
+	// what heppaned to arrBoardContents and arrBoardContents[i]
+	
 	return 0;
 }
