@@ -21,7 +21,7 @@ public:
         return NextNode;
     }
 
-    T GetData() {
+    T& GetData() {
         return NodeData;
     }
 
@@ -66,33 +66,55 @@ public:
     }
 
 
-    template<typename T> struct Iterator {
+    struct Iterator {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
 
-        Iterator(Node<T>* ptr) : m_ptr(ptr) {}
+        Iterator(Node<T>* ptr = nullptr) : m_ptr(ptr) {}
 
-        Node<T>* operator->() { return m_ptr; }
+        reference operator*() {
+            return m_ptr->GetData();
+        }
 
-        Iterator operator++() {
-            m_ptr = m_ptr->GetNextNode();
+        pointer operator->() const {
+            return &(**this);
+        }
+
+        Iterator& operator++() {
+            if (m_ptr)
+                m_ptr = m_ptr->GetNextNode();
             return *this;
         }
 
+        bool operator==(const Iterator& other) const {
+            return m_ptr == other.m_ptr;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return !(*this == other);
+        }
 
     private:
         Node<T>* m_ptr;
     };
 
+    Iterator begin() const {
+        return Iterator(head);
+    }
+
+    Iterator end() const {
+        return Iterator(nullptr);
+    }
+
     void display() const {
-        for (auto It = head; It->GetNextNode() != nullptr; It++) {
-            std::cout << It->GetData() << " ";
+        for (auto It = begin(); It != end(); ++It) {
+            std::cout << *It << " ";
 
         }
-        //Node<T>* current = head;
-        //while (current != nullptr) {
-        //    current = current->GetNextNode();
-        //}
+
     }
 
 };
@@ -107,6 +129,5 @@ int main()
     CharList.add('a');
     CharList.add('a');
     CharList.display();
-    std::cout<<CharList.GetSize();
+    std::cout << CharList.GetSize();
 }
-
