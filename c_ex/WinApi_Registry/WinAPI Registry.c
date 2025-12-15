@@ -1,106 +1,84 @@
-#include <stdio.h>
-#include <string.h>
-#include <Windows.h>
+#include "WinAPI Registry.h"
 
-//VOID EnumerateRegistryValues(HKEY hKeyParent, LPCWSTR subKeyPath) {
-//    HKEY hKey;
-//    if (RegOpenKeyExW(hKeyParent, subKeyPath, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-//        DWORD dwMaxValueNameLen;
-//        DWORD dwMaxValueDataLen;
-//        // Get key information to determine buffer sizes
-//        if (RegQueryInfoKeyW(hKey, NULL, NULL, NULL, NULL, NULL, NULL,
-//            NULL, &dwMaxValueNameLen, &dwMaxValueDataLen,
-//            NULL, NULL) == ERROR_SUCCESS) {
-//
-//            // Adjust for null terminators
-//            dwMaxValueNameLen++;
-//            dwMaxValueDataLen++;
-//
-//            LPWSTR lpValueName;
-//            LPWSTR lpValueData;
-//
-//
-//            if (RegEnumValueW(hKey, 1, &lpValueName, dwMaxValueNameLen,
-//                NULL, NULL, &lpValueData, dwMaxValueDataLen) == ERROR_SUCCESS) {
-//                printf("%s", lpValueName);
-//            }
-//        }
-//    }
-//    RegCloseKey(hKey);
-//}
+VOID XorCipher(LPWSTR inData, LPWSTR inKey) {
+    SIZE_T ulDataLen = wcslen(inData);
+    SIZE_T ulKeyLen = wcslen(inKey);
 
-//VOID GetSecondRegistryValue(HKEY hKeyParent, LPCSTR subKeyPath) {
-//    HKEY hKey;
-//    if (RegOpenKeyExW(HKEY_CURRENT_USER, subKeyPath, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
-//        return;
-//
-//    DWORD maxNameLen = 0, maxDataLen = 0;
-//    if (RegQueryInfoKeyW(hKey, NULL, NULL, NULL, NULL, NULL, NULL,
-//        NULL, &maxNameLen, &maxDataLen, NULL, NULL) != ERROR_SUCCESS) {
-//        RegCloseKey(hKey);
-//        return;
-//    }
-//
-//    maxNameLen++;           // for null
-//    LPWSTR nameBuf = (LPWSTR)LocalAlloc(LPTR, maxNameLen * sizeof(WCHAR));
-//    LPBYTE dataBuf = (LPBYTE)LocalAlloc(LPTR, maxDataLen);
-//    if (!nameBuf || !dataBuf) {
-//        if (nameBuf) LocalFree(nameBuf);
-//        if (dataBuf) LocalFree(dataBuf);
-//        RegCloseKey(hKey);
-//        return;
-//    }
-//
-//    DWORD nameLen = maxNameLen;
-//    DWORD dataLen = maxDataLen;
-//    DWORD type;
-//
-//    // index 1 == “second value”
-//    if (RegEnumValueW(hKey, 1, nameBuf, &nameLen,
-//        NULL, &type, dataBuf, &dataLen) == ERROR_SUCCESS) {
-//        wprintf(L"%s\n", nameBuf);
-//    }
-//
-//    LocalFree(nameBuf);
-//    LocalFree(dataBuf);
-//    RegCloseKey(hKey);
-//}
-INT main(VOID) {
+    for (SIZE_T i = 0; i < ulDataLen; i++) {
+        inData[i] = inData[i] ^ inKey[i % ulKeyLen];
 
-    HKEY hHiveKey = HKEY_CURRENT_USER;
-    LPCWSTR lpwcSubKey = L"WinAPI Registry";
-    HKEY hkey;
+    }
+}
 
-    if (RegOpenKeyExW(hHiveKey, lpwcSubKey, 0, KEY_READ, &hkey) == ERROR_SUCCESS) {
+VOID CreateRegKeyAndValue(HKEY inHiveKey, LPCWSTR inSubKey) { 
+    HKEY hKey;
+    WCHAR lpwPCName[MAX_COMPUTERNAME_LENGTH + 1];
 
-        DWORD dwMaxValueNameLen;
-        DWORD dwMaxValueDataLen;
-        // Get key information to determine buffer sizes
-        if (RegQueryInfoKeyW(hkey, NULL, NULL, NULL, NULL, NULL, NULL,
+    LPCWSTR lpcwValueName = L"LALALA";
+    DWORD length = MAX_COMPUTERNAME_LENGTH + 1;
+
+    GetComputerNameExW(ComputerNameDnsHostname, lpwPCName, &length);
+
+    XorCipher(lpwPCName, lpcwValueName);
+
+    DWORD datasizebytes = ((DWORD)wcslen(lpwPCName) + 1) * sizeof(WCHAR);
+    
+    RegCreateKeyExW(inHiveKey, inSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE | KEY_READ, NULL, &hKey, NULL);
+    RegSetValueExW(hKey, lpcwValueName, 0, REG_SZ, (const BYTE*)lpwPCName, datasizebytes);
+    RegCloseKey(hKey);
+
+    return;
+}
+
+VOID PrintDecryptedPCName(HKEY inHiveKey, LPCWSTR inSubKey) {
+  
+    HKEY hKey;
+
+    DWORD dwMaxValueNameLen;
+    DWORD dwMaxValueDataLen;
+
+    LONG lStatus;
+    lStatus = RegOpenKeyExW(inHiveKey, inSubKey, 0, KEY_READ, &hKey);
+    if (lStatus == ERROR_SUCCESS) {
+
+        if (RegQueryInfoKeyW(hKey, NULL, NULL, NULL, NULL, NULL, NULL,
             NULL, &dwMaxValueNameLen, &dwMaxValueDataLen,
             NULL, NULL) == ERROR_SUCCESS) {
 
-            // Adjust for null terminators
             dwMaxValueNameLen++;
             dwMaxValueDataLen++;
 
+            LPWSTR nameBuf = (LPWSTR)malloc(dwMaxValueNameLen * sizeof(WCHAR));
+            LPWSTR dataBuf = (LPWSTR)malloc(dwMaxValueDataLen * sizeof(WCHAR));
 
-            LPWSTR nameBuf = (LPWSTR)malloc( dwMaxValueNameLen * sizeof(WCHAR));
-            LPWSTR dataBuf = (LPWSTR)malloc( dwMaxValueDataLen * sizeof(WCHAR));
-
-
-                if (RegEnumValueW(hkey, 0, nameBuf, &dwMaxValueNameLen,
+            if (RegEnumValueW(hKey, 0, nameBuf, &dwMaxValueNameLen,
                 NULL, NULL, dataBuf, &dwMaxValueDataLen) == ERROR_SUCCESS) {
-                wprintf(L"%s", nameBuf);
-                wprintf(L"%Ts", dataBuf);
+
+                XorCipher(dataBuf, nameBuf);
+                wprintf(L"The decrypted reg value data is: %ls", dataBuf);
+
             }
+
+            free(nameBuf);         
+            free(dataBuf);
         }
-        RegCloseKey(hkey);
+
+        RegCloseKey(hKey); 
+        RegDeleteTreeW(inHiveKey, inSubKey);
+
+    }
+    else if (lStatus == ERROR_FILE_NOT_FOUND){
+        printf("Registry Key not found, creating new key and value");
+        CreateRegKeyAndValue(inHiveKey, inSubKey);
     }
 
-    else {
-        printf("bad");
-    }
-    //GetSecondRegistryValue(HKEY_CURRENT_USER, lpcSubKey);
+}
+
+INT main(VOID) {
+    HKEY hHiveKey = HKEY_CURRENT_USER;
+    LPCWSTR lpwcSubKey = L"WinAPI Registry";
+
+    PrintDecryptedPCName(hHiveKey, lpwcSubKey);
+
 	return 0;
 }
