@@ -6,7 +6,7 @@ SNIFF_FILTER = "dst host 127.0.0.1 and dst portrange 0-127"
 def analizePorts(packet):
     if scapy.UDP in packet:
         port = packet[scapy.UDP].dport
-        print(chr(port))
+        print(chr(port), end="")
 
 def main():
 
